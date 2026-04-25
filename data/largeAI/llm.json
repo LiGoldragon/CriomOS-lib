@@ -1,6 +1,5 @@
 {
   "serverPort": 11434,
-  "apiKey": "sk-no-key-required",
 
   "piAgent": {
     "defaultModel": "qwen3.5-122b-a10b",
