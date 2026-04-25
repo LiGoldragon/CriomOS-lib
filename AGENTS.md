@@ -1,0 +1,41 @@
+# Agent Bootstrap — CriomOS-lib
+
+## Scope
+
+Shared helpers and data files consumed by both CriomOS and
+CriomOS-home. Intentionally tiny: no Rust, no nixpkgs dependency, no
+blueprint. Pure helpers + static data.
+
+Today this is:
+
+- `lib/default.nix` — `importJSON` + `mkJsonMerge`. Surface as
+  `inputs.criomos-lib.lib`.
+- `data/largeAI/llm.json` — LLM model config consumed by CriomOS's
+  `modules/nixos/llm.nix`. Surface as
+  `inputs.criomos-lib + "/data/largeAI/llm.json"`.
+
+## What belongs here
+
+- Helper functions used by **two or more** of: CriomOS, CriomOS-home,
+  and any future criomos-* repo.
+- Static data files referenced by two or more such repos.
+
+## What does NOT belong here
+
+- Anything used by only one repo — keep it local.
+- Anything that needs nixpkgs to evaluate (this flake stays
+  dependency-free so consumers don't pay for it).
+- Long-form prose / architecture docs — those go in the consuming repo
+  whose architecture is being described.
+
+## Hard rules (inherited)
+
+- Jujutsu only.
+- Push before consumer rebuilds — consumers reference this flake by
+  rev, so the rev must exist on the remote before they can build.
+- Keep the helper API stable — every change ripples to all consumers.
+
+## AGENTS.md / CLAUDE.md convention
+
+`AGENTS.md` is the source of truth; `CLAUDE.md` is a one-line shim
+reading `See [AGENTS.md](AGENTS.md).`.
