@@ -158,6 +158,38 @@
       "sizeGB": 17
     },
     {
+      "modelId": "qwen3.6-35b-a3b",
+      "descriptor": "Qwen3.6 35B-A3B UD-Q4_K_M (Apr 2026 — reasoning MoE)",
+      "source": {
+        "kind": "fetchurl",
+        "url": "https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF/resolve/a483e9e6cbd595906af30beda3187c2663a1118c/Qwen3.6-35B-A3B-UD-Q4_K_M.gguf",
+        "sha256": "sha256-rA4sEYngVfqjbv82FYDnnFvW+Odr/7TOVH8WfVPjGmE=",
+        "filename": "Qwen3.6-35B-A3B-UD-Q4_K_M.gguf"
+      },
+      "reasoning": true,
+      "contextWindow": 131072,
+      "maxTokens": 4096,
+      "ctxSize": 131072,
+      "loadOnStartup": false,
+      "sizeGB": 22
+    },
+    {
+      "modelId": "qwen3.6-27b",
+      "descriptor": "Qwen3.6 27B Q4_K_M (Apr 2026 — dense reasoning)",
+      "source": {
+        "kind": "fetchurl",
+        "url": "https://huggingface.co/unsloth/Qwen3.6-27B-GGUF/resolve/82d411acf4a06cfb8d9b073a5211bf410bfc29bf/Qwen3.6-27B-Q4_K_M.gguf",
+        "sha256": "sha256-XtYNCvRlCoVLF1W9OS+a70hyZD3CWiVLxoBD+mODkqA=",
+        "filename": "Qwen3.6-27B-Q4_K_M.gguf"
+      },
+      "reasoning": true,
+      "contextWindow": 131072,
+      "maxTokens": 4096,
+      "ctxSize": 131072,
+      "loadOnStartup": false,
+      "sizeGB": 17
+    },
+    {
       "modelId": "qwen3-8b",
       "descriptor": "Qwen3 8B Q4_K_M (Apr 2025 — fast reasoning)",
       "source": {
