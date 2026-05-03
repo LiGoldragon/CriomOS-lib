@@ -8,8 +8,8 @@ blueprint. Pure helpers + static data.
 
 Today this is:
 
-- `lib/default.nix` — `importJSON` + `mkJsonMerge`. Surface as
-  `inputs.criomos-lib.lib`.
+- `lib/default.nix` — `constants`, `importJSON`, and `mkJsonMerge`.
+  Surface as `inputs.criomos-lib.lib`.
 - `data/largeAI/llm.json` — LLM model config consumed by CriomOS's
   `modules/nixos/llm.nix`. Surface as
   `inputs.criomos-lib + "/data/largeAI/llm.json"`.
