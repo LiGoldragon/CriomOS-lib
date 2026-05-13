@@ -60,7 +60,12 @@ in
         serverKeyFile = "/etc/criomOS/wifi-server/server.key";
       };
 
-      screenshots = "Pictures/Screenshots";
+      home = rec {
+        screenshotDirectory = "Pictures/Screenshots";
+        ensuredDirectories = [
+          screenshotDirectory
+        ];
+      };
     };
 
     network = {
@@ -116,7 +121,12 @@ in
   # tracked as CriomOS-bb5 (criomos-cfg side-repo with proper 3-way
   # merge + drift reporting).
   mkJsonMerge =
-    { lib, pkgs, file, nixSettings }:
+    {
+      lib,
+      pkgs,
+      file,
+      nixSettings,
+    }:
     let
       nixJsonFile = pkgs.writeText "nix-settings.json" (toJSON nixSettings);
       jq = "${pkgs.jq}/bin/jq";
