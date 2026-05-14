@@ -10,9 +10,14 @@ Today this is:
 
 - `lib/default.nix` — `constants`, `importJSON`, and `mkJsonMerge`.
   Surface as `inputs.criomos-lib.lib`.
-- `data/largeAI/llm.json` — LLM model config consumed by CriomOS's
-  `modules/nixos/llm.nix`. Surface as
-  `inputs.criomos-lib + "/data/largeAI/llm.json"`.
+
+`data/largeAI/llm.json` was deleted in step 6 of the horizon
+re-engineering arc — every server-side AI provisioning field
+(serverPort, models[].source/sha256/ctxSize/loadOnStartup,
+presetDefaults, router config) now lives in
+`horizon.cluster.aiProviders[].models[].serving` and
+`.servingConfig`. CriomOS modules (`llm.nix`) and CriomOS-home
+modules (`pi-models.nix`) read horizon directly.
 
 ## What belongs here
 
