@@ -85,11 +85,11 @@ in
         };
       };
 
-      lan = {
-        subnetPrefix = "10.18.0";
-        gateway = "10.18.0.1";
-        subnet = "10.18.0.0/24";
-      };
+      # `lan` LAN subnet/gateway constants moved to horizon — see
+      # `horizon.cluster.lan` (typed `LanNetwork { cidr, gateway,
+      # dhcpPool, leasePolicy }`). CriomOS network/router modules
+      # read directly from horizon; CriomOS-lib does not carry a
+      # cluster-LAN literal.
 
       nat64.pool = rec {
         subnet = "64:ff9b::";
