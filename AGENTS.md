@@ -10,26 +10,28 @@ Today this is:
 
 - `lib/default.nix` — `constants`, `importJSON`, and `mkJsonMerge`.
   Surface as `inputs.criomos-lib.lib`.
-
-`data/largeAI/llm.json` was deleted in step 6 of the horizon
-re-engineering arc — every server-side AI provisioning field
-(serverPort, models[].source/sha256/ctxSize/loadOnStartup,
-presetDefaults, router config) now lives in
-`horizon.cluster.aiProviders[].models[].serving` and
-`.servingConfig`. CriomOS modules (`llm.nix`) and CriomOS-home
-modules (`pi-models.nix`) read horizon directly.
+- `data/largeAI/llm.json` — CriomOS-owned local llama model catalog
+  and runtime defaults. Cluster data selects the provider profile;
+  it does not carry model URLs or serving policy.
+- `data/config/nordvpn/servers-lock.json` — CriomOS-owned NordVPN
+  server/client/DNS catalog. Cluster data selects NordVPN plus
+  preferences and credentials; it does not carry the provider catalog.
 
 ## What belongs here
 
 - Helper functions used by **two or more** of: CriomOS, CriomOS-home,
   and any future criomos-* repo.
 - Static data files referenced by two or more such repos.
+- Runtime defaults and provider catalogs that are properties of
+  CriomOS, not properties of one cluster.
 
 ## What does NOT belong here
 
 - Anything used by only one repo — keep it local.
 - Anything that needs nixpkgs to evaluate (this flake stays
   dependency-free so consumers don't pay for it).
+- Cluster-authored facts such as node names, cluster names, domains,
+  keys, secrets, and provider selections.
 - Long-form prose / architecture docs — those go in the consuming repo
   whose architecture is being described.
 

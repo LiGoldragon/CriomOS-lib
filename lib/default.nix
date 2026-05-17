@@ -20,6 +20,8 @@ let
     dynamicUserStateDirectory = stateDirectory + "/private";
     dynamicUserRuntimeDirectory = runtimeDirectory + "/private";
   };
+
+  importJSONFile = filePath: fromJSON (readFile filePath);
 in
 {
   constants = {
@@ -87,9 +89,20 @@ in
 
       # `lan` LAN subnet/gateway constants moved to horizon — see
       # `horizon.cluster.lan` (typed `LanNetwork { cidr, gateway,
-      # dhcpPool, leasePolicy }`). CriomOS network/router modules
-      # read directly from horizon; CriomOS-lib does not carry a
-      # cluster-LAN literal.
+      # dhcpPool }`). CriomOS-lib keeps only runtime defaults whose
+      # values do not identify a cluster.
+      lan.lease.defaultTtlSeconds = 4000;
+
+      resolver = {
+        upstreams = [
+          "1.1.1.1"
+          "1.0.0.1"
+        ];
+        fallbacks = [
+          "9.9.9.9"
+          "149.112.112.112"
+        ];
+      };
 
       nat64.pool = rec {
         subnet = "64:ff9b::";
@@ -106,11 +119,24 @@ in
         store.http.ports.external = 8000;
       };
     };
+
+    ai.localLlama = {
+      protocol = "OpenAiCompat";
+      basePath = "/v1";
+      gpuOverride = "11.5.1";
+      memoryMaxGb = 110;
+      memoryHighGb = 100;
+    };
+  };
+
+  catalogs = {
+    ai.localLlama = importJSONFile ../data/largeAI/llm.json;
+    nordvpn = importJSONFile ../data/config/nordvpn/servers-lock.json;
   };
 
   # ─── JSON helpers ────────────────────────────────────────────────────
 
-  importJSON = filePath: fromJSON (readFile filePath);
+  importJSON = importJSONFile;
 
   # Deep-merge a nix-declared JSON object into a mutable settings file.
   # Nix-declared keys win; user-added keys are preserved.
