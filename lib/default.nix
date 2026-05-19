@@ -118,6 +118,8 @@ in
 
         store.http.ports.external = 8000;
       };
+
+      headscale.port = 8443;
     };
 
     ai.localLlama = {
