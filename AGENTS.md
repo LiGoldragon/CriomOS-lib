@@ -25,12 +25,15 @@ Today this is:
 - Anything used by only one repo — keep it local.
 - Anything that needs nixpkgs to evaluate (this flake stays
   dependency-free so consumers don't pay for it).
-- Long-form prose / architecture docs — those go in the consuming repo
-  whose architecture is being described.
+- Cluster-specific policy or data — those belong in the cluster
+  proposal / horizon.
 
 ## Hard rules (inherited)
 
 - Jujutsu only.
+- This repo still has `AGENTS.md`, `ARCHITECTURE.md`, and `skills.md`.
+  They stay short because the component is intentionally small, but the
+  workspace documentation layers still apply.
 - Push before consumer rebuilds — consumers reference this flake by
   rev, so the rev must exist on the remote before they can build.
 - Keep the helper API stable — every change ripples to all consumers.
