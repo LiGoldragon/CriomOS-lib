@@ -87,10 +87,10 @@ in
         };
       };
 
-      # `lan` LAN subnet/gateway constants moved to horizon — see
-      # `horizon.cluster.lan` (typed `LanNetwork { cidr, gateway,
-      # dhcpPool }`). CriomOS-lib keeps only runtime defaults whose
-      # values do not identify a cluster.
+      # Transitional IPv4 LAN subnet/gateway constants are not here
+      # yet. The lean-horizon cutover intends this shared library to
+      # carry CriomOS-side operational defaults; keep only runtime
+      # defaults here until that migration lands.
       lan.lease.defaultTtlSeconds = 4000;
 
       resolver = {
