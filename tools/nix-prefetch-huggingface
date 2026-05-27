@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# nix-prefetch-huggingface — equivalent of nix-prefetch-url for a
+# Hugging Face model snapshot. Downloads the snapshot via
+# huggingface-cli and prints its SRI hash so callers can pin a
+# `fetchHfModel { hash = ...; }` derivation without hand-computing
+# the hash.
+#
+# Usage:
+#   nix-prefetch-huggingface <repo> [<revision>]
+#
+# Examples:
+#   nix-prefetch-huggingface hf-internal-testing/tiny-random-gpt2
+#   nix-prefetch-huggingface google/gemma-4-E4B-it main
+#   nix-prefetch-huggingface unsloth/gemma-4-E4B-it-GGUF v1.0
+#
+# Requires `huggingface-cli` on PATH (from python3Packages.huggingface-hub)
+# and `nix` with the `nix-command` experimental feature.
+#
+# For gated models, set HF_TOKEN in the environment before invocation.
+#
+# Output: an SRI hash on stdout (e.g. `sha256-AAAA...`). Diagnostic
+# output goes to stderr so the stdout result can be piped directly
+# into a nix expression.
+
+set -euo pipefail
+
+if [[ $# -lt 1 || $# -gt 2 ]]; then
+  echo "usage: nix-prefetch-huggingface <repo> [<revision>]" >&2
+  exit 64
+fi
+
+repo="$1"
+revision="${2:-main}"
+
+# Prefer the modern `hf` CLI; fall back to `huggingface-cli` (deprecated
+# but still shipped in older huggingface-hub releases).
+if command -v hf >/dev/null 2>&1; then
+  hf_command=hf
+elif command -v huggingface-cli >/dev/null 2>&1; then
+  hf_command=huggingface-cli
+else
+  echo "nix-prefetch-huggingface: neither hf nor huggingface-cli on PATH" >&2
+  echo "  install via: nix profile install nixpkgs#python3Packages.huggingface-hub" >&2
+  exit 127
+fi
+
+if ! command -v nix >/dev/null 2>&1; then
+  echo "nix-prefetch-huggingface: nix not on PATH" >&2
+  exit 127
+fi
+
+tmpdir=$(mktemp -d -t hf-prefetch.XXXXXX)
+trap 'rm -rf "$tmpdir"' EXIT
+
+snapshot="$tmpdir/snapshot"
+mkdir -p "$snapshot"
+
+echo "nix-prefetch-huggingface: downloading $repo @ $revision" >&2
+
+HF_HOME="$tmpdir/hf-home" \
+HF_HUB_CACHE="$tmpdir/hf-home/hub" \
+  "$hf_command" download "$repo" \
+    --revision "$revision" \
+    --local-dir "$snapshot" \
+    >&2
+
+# huggingface-cli adds a .cache/ subdirectory for download bookkeeping
+# (resume state, lock files). Strip it so the resulting hash matches
+# the snapshot content the fetcher derivation produces.
+rm -rf "$snapshot/.cache"
+
+echo "nix-prefetch-huggingface: hashing snapshot tree" >&2
+
+nix --extra-experimental-features 'nix-command' \
+  hash path --type sha256 --format sri "$snapshot"

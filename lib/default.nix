@@ -110,6 +110,22 @@ in
     };
   };
 
+  # ─── Hugging Face model fetcher ──────────────────────────────────────
+
+  # fetchHfModel — fixed-output derivation that pins a HF model
+  # snapshot to a hash, produced by `tools/nix-prefetch-huggingface`.
+  # Mirrors the nix-prefetch-url / fetchurl shape for HF model
+  # downloads. Pass `pkgs` first; returns a callable taking
+  # `{ repo, revision, hash, files?, tokenEnvironmentVariable? }`.
+  #
+  # Usage:
+  #   criomos-lib.fetchHfModel pkgs {
+  #     repo = "google/gemma-4-E4B-it";
+  #     revision = "main";
+  #     hash = "sha256-...";  # from nix-prefetch-huggingface
+  #   }
+  fetchHfModel = pkgs: import ./fetchHfModel.nix { inherit pkgs; };
+
   # ─── JSON helpers ────────────────────────────────────────────────────
 
   importJSON = filePath: fromJSON (readFile filePath);

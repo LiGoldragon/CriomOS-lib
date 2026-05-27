@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# criome-mint-llm-api-token — generate a strong random API token for
+# the local LLM service (prometheus's llama-server today; whichever
+# host carries the largeAI role tomorrow) and store it in gopass at
+# a zone-stable path.
+#
+# Per psyche 2026-05-27 (spirit record on prometheus auth), the
+# gopass path is goldragon.criome/local-llm-api-token — zone-scoped
+# so it survives the largeAI role moving between hosts. Distinct
+# from provider-scoped tokens like cloudflare/api-token.
+#
+# Usage:
+#   criome-mint-llm-api-token            # mint if absent; refuse to overwrite
+#   criome-mint-llm-api-token --rotate   # overwrite existing token
+#   criome-mint-llm-api-token --path X   # use a different gopass path
+#
+# The minted token is 32 bytes of /dev/urandom-derived randomness
+# (256 bits), hex-encoded for safe transit through env vars and
+# config files. After minting:
+#
+#   * Server-side: prometheus's /var/lib/llama/api-key gets
+#     populated from this gopass entry (deployment-side wiring).
+#   * Client-side: browser-use and any future llm-API consumer
+#     reads OPENAI_API_KEY from `gopass show -o
+#     goldragon.criome/local-llm-api-token`.
+
+set -euo pipefail
+
+readonly default_path="goldragon.criome/local-llm-api-token"
+readonly token_bytes=32
+
+path="$default_path"
+rotate=0
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --rotate)
+      rotate=1
+      shift
+      ;;
+    --path)
+      if [[ $# -lt 2 ]]; then
+        echo "criome-mint-llm-api-token: --path needs an argument" >&2
+        exit 64
+      fi
+      path="$2"
+      shift 2
+      ;;
+    --help|-h)
+      sed -n '1,30p' "$0" | sed 's/^# \?//'
+      exit 0
+      ;;
+    *)
+      echo "criome-mint-llm-api-token: unknown argument '$1'" >&2
+      echo "  usage: criome-mint-llm-api-token [--rotate] [--path <gopass-path>]" >&2
+      exit 64
+      ;;
+  esac
+done
+
+if ! command -v gopass >/dev/null 2>&1; then
+  echo "criome-mint-llm-api-token: gopass not on PATH" >&2
+  exit 127
+fi
+
+if ! command -v openssl >/dev/null 2>&1; then
+  echo "criome-mint-llm-api-token: openssl not on PATH" >&2
+  exit 127
+fi
+
+if (( rotate == 0 )) && gopass show -o "$path" >/dev/null 2>&1; then
+  echo "criome-mint-llm-api-token: token already exists at $path" >&2
+  echo "  use --rotate to overwrite (existing consumers must re-read)" >&2
+  exit 65
+fi
+
+# openssl rand is the standard secret-generation primitive — same
+# entropy as /dev/urandom underneath, but with hex encoding built in.
+token=$(openssl rand -hex "$token_bytes")
+
+# `gopass insert -f` accepts the secret on stdin and overwrites any
+# existing entry at the path. The -f is the gopass-level overwrite
+# flag; our --rotate flag is what gates whether we reach this point.
+printf '%s\n' "$token" | gopass insert -f "$path" >/dev/null
+
+if (( rotate == 1 )); then
+  echo "criome-mint-llm-api-token: ROTATED token at $path (${token_bytes}-byte / 256-bit)" >&2
+  echo "  existing consumers (prometheus llama-server, browser-use)" >&2
+  echo "  must re-read; restart or wait for next gopass-show call." >&2
+else
+  echo "criome-mint-llm-api-token: minted token at $path (${token_bytes}-byte / 256-bit)" >&2
+fi
+
+echo "  retrieve via: gopass show -o $path" >&2
