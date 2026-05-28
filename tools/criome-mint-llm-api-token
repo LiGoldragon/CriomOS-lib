@@ -63,20 +63,16 @@ if ! command -v gopass >/dev/null 2>&1; then
   exit 127
 fi
 
-if ! command -v openssl >/dev/null 2>&1; then
-  echo "criome-mint-llm-api-token: openssl not on PATH" >&2
-  exit 127
-fi
-
 if (( rotate == 0 )) && gopass show -o "$path" >/dev/null 2>&1; then
   echo "criome-mint-llm-api-token: token already exists at $path" >&2
   echo "  use --rotate to overwrite (existing consumers must re-read)" >&2
   exit 65
 fi
 
-# openssl rand is the standard secret-generation primitive — same
-# entropy as /dev/urandom underneath, but with hex encoding built in.
-token=$(openssl rand -hex "$token_bytes")
+# /dev/urandom is the CSPRNG primitive; od hex-encodes the bytes and
+# tr strips od's column spacing and newlines. No openssl dependency,
+# so the tool runs on a minimal host. Same CSPRNG openssl draws from.
+token=$(head -c "$token_bytes" /dev/urandom | od -An -tx1 | tr -d ' \n')
 
 # `gopass insert -f` accepts the secret on stdin and overwrites any
 # existing entry at the path. The -f is the gopass-level overwrite

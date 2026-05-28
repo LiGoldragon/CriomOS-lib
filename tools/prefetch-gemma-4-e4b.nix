@@ -18,9 +18,11 @@ in
 fetchHfModel {
   repo = "unsloth/gemma-4-E4B-it-GGUF";
   revision = "main";
-  # Real hash, computed on prometheus 2026-05-27 via the fake-hash trick.
+  # Weights-only hash from 2026-05-27; STALE now that the mmproj file is
+  # included below, so nix reports the real combined hash via the
+  # fake-hash trick. Update once the prometheus prefetch returns it.
   hash = "sha256-5uGLLTbFgT0CEoBAUsaiy3DhgokOYFk3pH2T48cm5bc=";
-  # GGUF repos usually carry multiple quant variants. Filter to the
-  # smallest Q4_K_M variant the user named ("the small Gemma 4 Flash").
-  files = [ "*Q4_K_M*.gguf" ];
+  # Q4_K_M weights + the F16 vision projector. llama-server consumes the
+  # weights with -m and the projector with --mmproj for image input.
+  files = [ "*Q4_K_M*.gguf" "mmproj-F16.gguf" ];
 }
