@@ -204,6 +204,66 @@
       "ctxSize": 32768,
       "loadOnStartup": false,
       "sizeGB": 5
+    },
+    {
+      "modelId": "gemma-4-31b",
+      "descriptor": "Gemma 4 31B BF16 (Apr 2026 — dense multimodal, vision via mmproj-F16)",
+      "source": {
+        "kind": "multi-shard",
+        "shards": [
+          {
+            "url": "https://huggingface.co/unsloth/gemma-4-31B-it-GGUF/resolve/3f07b20fc8e73cec677713305971e534fe8c4ce3/BF16/gemma-4-31B-it-BF16-00001-of-00002.gguf",
+            "sha256": "sha256-vxOMMuseV9izNY3X+hMUEfvtmRIafmJGWeZvDQrrcZ8=",
+            "filename": "gemma-4-31B-it-BF16-00001-of-00002.gguf"
+          },
+          {
+            "url": "https://huggingface.co/unsloth/gemma-4-31B-it-GGUF/resolve/3f07b20fc8e73cec677713305971e534fe8c4ce3/BF16/gemma-4-31B-it-BF16-00002-of-00002.gguf",
+            "sha256": "sha256-7KkIOFXsVG6MutNy5DSOf5oRikkl+xCAUmISUty0NQQ=",
+            "filename": "gemma-4-31B-it-BF16-00002-of-00002.gguf"
+          }
+        ]
+      },
+      "mmproj": {
+        "url": "https://huggingface.co/unsloth/gemma-4-31B-it-GGUF/resolve/3f07b20fc8e73cec677713305971e534fe8c4ce3/mmproj-F16.gguf",
+        "sha256": "sha256-btzKIoITwo01Z6NdIvhJ7qUtg2CHUJOFGVmt9dLycOs=",
+        "filename": "mmproj-F16.gguf"
+      },
+      "reasoning": false,
+      "contextWindow": 131072,
+      "maxTokens": 4096,
+      "ctxSize": 32768,
+      "loadOnStartup": false,
+      "sizeGB": 63
+    },
+    {
+      "modelId": "gemma-4-26b-a4b",
+      "descriptor": "Gemma 4 26B-A4B BF16 (Apr 2026 — MoE 4B-active, fast multimodal, vision via mmproj-F16)",
+      "source": {
+        "kind": "multi-shard",
+        "shards": [
+          {
+            "url": "https://huggingface.co/unsloth/gemma-4-26B-A4B-it-GGUF/resolve/3365c68df1a83799b846d05324ebfadbb8cc70b3/BF16/gemma-4-26B-A4B-it-BF16-00001-of-00002.gguf",
+            "sha256": "sha256-5PWHkzDFRGjKHRYgKRz8OODDMgHBnU+zTzzsxdf+bkQ=",
+            "filename": "gemma-4-26B-A4B-it-BF16-00001-of-00002.gguf"
+          },
+          {
+            "url": "https://huggingface.co/unsloth/gemma-4-26B-A4B-it-GGUF/resolve/3365c68df1a83799b846d05324ebfadbb8cc70b3/BF16/gemma-4-26B-A4B-it-BF16-00002-of-00002.gguf",
+            "sha256": "sha256-x5ygPbdbmoZEz33KgMJI9JVzJEEFR6iM+1sMB4dVFto=",
+            "filename": "gemma-4-26B-A4B-it-BF16-00002-of-00002.gguf"
+          }
+        ]
+      },
+      "mmproj": {
+        "url": "https://huggingface.co/unsloth/gemma-4-26B-A4B-it-GGUF/resolve/3365c68df1a83799b846d05324ebfadbb8cc70b3/mmproj-F16.gguf",
+        "sha256": "sha256-QYpthyMGfNcSI1+su8XLpsj7vUE/wSktKqzloCfVpC8=",
+        "filename": "mmproj-F16.gguf"
+      },
+      "reasoning": false,
+      "contextWindow": 131072,
+      "maxTokens": 4096,
+      "ctxSize": 32768,
+      "loadOnStartup": false,
+      "sizeGB": 52
     }
   ]
 }
