@@ -42,3 +42,10 @@ Today this is:
 
 `AGENTS.md` is the source of truth; `CLAUDE.md` is a one-line shim
 reading `See [AGENTS.md](AGENTS.md).`.
+
+## Protos estate status
+
+Protos estate scope: out of scope
+Stack: not applicable
+Role: operating-system library
+This is scope metadata, not a stack.
